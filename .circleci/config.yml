@@ -1,0 +1,44 @@
+version: 2.1
+
+jobs:
+  run-bot:
+    resource_class: windows.medium
+    machine:
+      image: windows-server-2022-gui:current
+      shell: powershell.exe -ExecutionPolicy Bypass
+    parameters:
+      run_id:
+        type: string
+    steps:
+      - checkout
+
+      - run:
+          name: Cài đặt Python và pip
+          command: |
+            choco install python --version=3.10.11 -y
+            refreshenv
+            python --version
+            pip install --upgrade pip
+
+      - run:
+          name: Cài đặt các thư viện từ requirements.txt
+          command: |
+            pip install -r requirements.txt
+
+      - run:
+          name: ▶️ Chạy bot script (PyAutoGUI)
+          command: |
+            echo "Running bot script for RUN_ID: << parameters.run_id >>"
+            python main.py
+
+workflows:
+  run-parallel:
+    jobs:
+      - run-bot:
+          matrix:
+            parameters:
+              run_id: [
+                "job1", "job2", "job3", "job4", "job5", "job6", "job7", "job8", "job9", "job10",
+                "job11", "job12", "job13", "job14", "job15", "job16", "job17", "job18", "job19", "job20",
+                "job21", "job22", "job23", "job24", "job25", "job26", "job27", "job28", "job29", "job30"
+              ]
